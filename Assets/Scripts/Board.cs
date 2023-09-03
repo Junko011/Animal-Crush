@@ -15,10 +15,19 @@ public class Board : MonoBehaviour
 
     public GameObject[] availablePieces;
 
+    Tile[,] Tiles;
+    Piece[,] Pieces;
+
+    Tile startTile;
+    Tile endTile;
 
     // Start is called before the first frame update
     void Start()
     {
+
+        Tiles = new Tile[width, height];
+        Pieces = new Piece[width, height];
+
         SetupBoard();
         PositionCamera();
         SetupPieces();
@@ -26,18 +35,17 @@ public class Board : MonoBehaviour
 
     private void SetupPieces()
     {
-        for(int x=0; x<width; x++)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y<height; y++)
+            for (int y = 0; y < height; y++)
             {
-                var selectedPiece = availablePieces[UnityEngine.Random.Range(0,availablePieces.Length)];
+                var selectedPiece = availablePieces[UnityEngine.Random.Range(0, availablePieces.Length)];
                 var o = Instantiate(selectedPiece, new Vector3(x, y, -5), Quaternion.identity);
                 o.transform.parent = transform;
-                o.GetComponent<Piece>()?.Setup(x, y, this);
+                Pieces[x, y] = o.GetComponent<Piece>();
+                Pieces[x, y].Setup(x, y, this);
             }
         }
-
-
     }
 
     private void PositionCamera()
@@ -45,12 +53,12 @@ public class Board : MonoBehaviour
         float newPosX = (float)width / 2f;
         float newPosY = (float)height / 2f;
 
-        Camera.main.transform.position = new Vector3(newPosX -0.5f, newPosY -0.5f + cameraVerticalOffset, -10f);
+        Camera.main.transform.position = new Vector3(newPosX - 0.5f, newPosY - 0.5f + cameraVerticalOffset, -10f);
 
         float horizontal = width+1;
-        float vertical = (height/2) + 1;
-        Camera.main.orthographicSize = horizontal > vertical ? horizontal + cameraSizeOffset : vertical + cameraSizeOffset; 
+        float vertical = (height / 2) + 1;
 
+        Camera.main.orthographicSize = horizontal > vertical ? horizontal + cameraSizeOffset : vertical + cameraSizeOffset;
 
     }
 
@@ -62,16 +70,41 @@ public class Board : MonoBehaviour
             {
                 var o = Instantiate(tileObject, new Vector3(x, y, -5), Quaternion.identity);
                 o.transform.parent = transform;
-                o.GetComponent<Tile>()?.Setup(x, y, this);
+                Tiles[x, y] = o.GetComponent<Tile>();
+                Tiles[x,y]?.Setup(x, y, this);
             }
         }
-
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public void TileDown(Tile tile_)
     {
+        startTile = tile_;
+    }
 
+    public void TileOver(Tile tile_)
+    {
+        endTile = tile_;
+    }
+
+    public void TileUp(Tile tile_)
+    {
+        if(startTile!=null && endTile != null)
+        {
+            SwapTiles();
+        }
+        startTile = null;
+        endTile = null;
+    }
+
+    private void SwapTiles()
+    {
+        var StarPiece = Pieces[startTile.x, startTile.y];
+        var EndPiece = Pieces[endTile.x, endTile.y];
+
+        StarPiece.Move(endTile.x, endTile.y);
+        EndPiece.Move(startTile.x, startTile.y);
+
+        Pieces[startTile.x, startTile.y] = EndPiece;
+        Pieces[endTile.x, endTile.y] = StarPiece;
     }
 }
