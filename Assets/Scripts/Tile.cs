@@ -29,5 +29,4 @@ public class Tile : MonoBehaviour
     {
         board.TileUp(this);
     }
-
 }

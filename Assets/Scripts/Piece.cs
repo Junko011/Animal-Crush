@@ -6,30 +6,31 @@ using DG.Tweening;
 public class Piece : MonoBehaviour
 {
     public int x;
-    public int y;   
+    public int y;
     public Board board;
+
 
     public enum type
     {
-        elefante,
-        jirafa,
-        hipo,
-        mono,
+        elephant,
+        giraffe,
+        hippo,
+        monkey,
         panda,
-        loro,
-        pinguino,
-        cerdo,
-        conejo,
-        serpiente
+        parrot,
+        penguin,
+        pig,
+        rabbit,
+        snake
     };
 
     public type pieceType;
 
-
-    public void Setup(int x_, int y_, Board board_){
-        x=x_;
-        y=y_;       
-        board=board_;
+    public void Setup(int x_, int y_, Board board_)
+    {
+        x = x_;
+        y = y_;
+        board = board_;
 
         transform.localScale = Vector3.one * 0.35f;
         transform.DOScale(Vector3.one, 0.35f);
@@ -37,8 +38,7 @@ public class Piece : MonoBehaviour
 
     public void Move(int desX, int desY)
     {
-
-        transform.DOMove(new Vector3(desX, desY, -5f), 0.25f).SetEase(Ease.InOutCubic).onComplete = () => 
+        transform.DOMove(new Vector3(desX, desY, -5f), 0.25f).SetEase(Ease.InOutCubic).onComplete = () =>
         {
             x = desX;
             y = desY;
@@ -49,7 +49,7 @@ public class Piece : MonoBehaviour
     {
         if (animated)
         {
-             transform.DORotate(new Vector3(0, 0, -120f), 0.12f);
+            transform.DORotate(new Vector3(0, 0, -120f), 0.12f);
             transform.DOScale(Vector3.one * 1.2f, 0.085f).onComplete = () =>
             {
                 transform.DOScale(Vector3.zero, 0.1f).onComplete = () =>
@@ -60,7 +60,7 @@ public class Piece : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);    
+            Destroy(gameObject);
         }
     }
 
@@ -68,18 +68,5 @@ public class Piece : MonoBehaviour
     public void MoveTest()
     {
         Move(0, 0);
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
